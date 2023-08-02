@@ -95,9 +95,7 @@ class Function:
 class ANPL:
 
     ENV = ast.parse('''
-import numpy as np
 from typing import *
-black, blue, red, green, yellow, grey, pink, orange, teal, maroon = range(10)
 ''')
 
     def __init__(self, funs: dict[str, Function], entry: str):

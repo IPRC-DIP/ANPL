@@ -67,7 +67,7 @@ Markdown format should be used to return it.
 def fun_synthesis(anpl: ANPL, name: str, temp:float = 0) -> Optional[str]:
     actor = hole_coder if name.startswith("_hole") else hole_resyner
     msgs = actor(anpl.to_python(), f"# {anpl.funs[name].prompt}\ndef {name}")
-    res = query(msgs, model="gpt-3.5-turbo", max_tokens=1024, temperature=temp)[0]
+    res = query(msgs, model="gpt-3.5-turbo-0301", max_tokens=1024, temperature=temp)[0]
     return res
 
 def batch_fun_synthesis(anpl: ANPL, name: str, n:int, temp:float) -> list[Optional[str]]:
@@ -75,6 +75,6 @@ def batch_fun_synthesis(anpl: ANPL, name: str, n:int, temp:float) -> list[Option
     actor = hole_coder if name.startswith("_hole") else hole_resyner
     anpl_for_prompt.funs[name].reset_to_hole()
     msgs = actor(anpl_for_prompt.to_python(), f"# {anpl.funs[name].prompt}\ndef {name}")
-    reses = query(msgs, model="gpt-3.5-turbo", max_tokens=1024, n=n, temperature=temp)
+    reses = query(msgs, model="gpt-3.5-turbo-0301", max_tokens=1024, n=n, temperature=temp)
     assert len(reses) == n, "OpenAI doesn't return enough responce"
     return reses

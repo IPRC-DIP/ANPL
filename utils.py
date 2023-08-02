@@ -179,7 +179,9 @@ class Logger:
             with open(f"{self.folder_path}/btask{self.task_id}_{timestr}.py", "w") as f:
                 f.write(object)
         else:
-            raise NotImplementedError("Unknown System")
+             with open(f"{self.folder_path}/task{self.task_id}_{timestr}.pkl", "wb") as f:
+                pickle.dump(object, f)
+            # raise NotImplementedError("Unknown System")
 
 
 def select_task():
