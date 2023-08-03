@@ -3,7 +3,6 @@ from utils import sys_str, system_info, multiline_input, select_task, set_openai
 from rich.prompt import IntPrompt, Confirm, Prompt
 import rich
 from anpl.sandbox import import_module_from_string, timeout
-import numpy as np
 import time
 from copy import deepcopy
 import webbrowser
@@ -41,9 +40,9 @@ webbrowser.open(url)
 io = json.loads(task["input_output"])
 input_examples, output_examples = io["inputs"], io["outputs"]
 print("---INPUT---")
-print(input_examples[0])
+print({'inp': input_examples[0]})
 print("---OUTPUT---")
-print(output_examples[0])
+print({'out': output_examples[0]})
 ans = False
 while not ans:
     ans = Confirm.ask("Would you like to start?")

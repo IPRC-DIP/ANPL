@@ -31,9 +31,9 @@ webbrowser.open(url)
 io = json.loads(task["input_output"])
 input_examples, output_examples = io["inputs"], io["outputs"]
 print("---INPUT---")
-print(input_examples[0])
+print({'input': input_examples[0]})
 print("---OUTPUT---")
-print(output_examples[0])
+print({'output': output_examples[0]})
 ans = False
 while not ans:
     ans = Confirm.ask("Would you like to start?")
@@ -126,7 +126,7 @@ while not is_correct:
             print_error(ioc.exception)
         elif len(ioc.ios) == 0:
             logger.log("user", "trace", f"{fun_name}: crash before this function")
-            system_info("[red]ANPL crash before this function.[/red]")
+            system_info("[red]ANPL crash before this function or this function has not been executed.[/red]")
             print_error(ioc.exception)
         else:
             logger.log("user", "trace", f"{fun_name}: show io to user")
