@@ -58,7 +58,7 @@ def anpl_trace(anpl: ANPL, fun_name: str, inputs: dict[str, Any], entry: Optiona
 
 def anpl_check(anpl: ANPL, fun_name: str, show_err: bool=True) -> bool:
     assert len(anpl.funs[fun_name].gloden_ios) > 0
-    for io in anpl.funs[fun_name].gloden_ios:
+    for io_id, io in enumerate(anpl.funs[fun_name].gloden_ios):
         ioc = anpl_trace(anpl, fun_name, io.inputs, fun_name)
         if show_err and ioc.exception:
             try:
@@ -71,5 +71,7 @@ def anpl_check(anpl: ANPL, fun_name: str, show_err: bool=True) -> bool:
         #     print("This function should be a recursive function because we have collected many ios. Check")
         real_io = ioc.ios.pop()
         if not (real_io == io):
-            return False
-    return True
+            print(f"Check: The except IO is {io}")
+            print(f"Check: The real IO is {real_io}")
+            return False, io_id
+    return True, None

@@ -8,13 +8,35 @@ from copy import deepcopy
 import time
 from rich.prompt import Confirm, Prompt, IntPrompt
 from rich.progress import track
+import rich
+import json
+import webbrowser
 
 set_openai_key()
 
 # Recieve Input and Output Examples
 task_id = IntPrompt.ask("Which APPS task would you like to try?")
-input_example = Prompt.ask("Please enter the input example")
-output_example = Prompt.ask("Please enter the output example")
+task = None
+with open("cf_task/data.jsonl", "r", encoding='utf-8') as f:
+    tasks = [json.loads(line) for line in f.readlines()]
+    task_lst = list(filter(lambda t: t['id'] == task_id, tasks))
+    if len(task_lst) != 1:
+        print("Invalid task id")
+        exit(0)
+    else:
+        task = task_lst[0]
+
+url = task["url"]
+webbrowser.open(url)
+io = json.loads(task["input_output"])
+input_examples, output_examples = io["inputs"], io["outputs"]
+print("---INPUT---")
+print(input_examples[0])
+print("---OUTPUT---")
+print(output_examples[0])
+ans = False
+while not ans:
+    ans = Confirm.ask("Would you like to start?")
 logger = Logger(task_id, "APPS")
 
 parser = ANPLParser()
@@ -68,12 +90,19 @@ in_param = anpl.funs[anpl.entry].get_params()
 if len(in_param) != 1:
     logger.log("system", "error", "The main function has multi param")
 assert len(in_param) == 1, "The main function should have only 1 param."
-anpl.funs[anpl.entry].gloden_ios.append(IOExample({in_param[0]: input_example}, output_example))
-is_correct = anpl_check(anpl, anpl.entry)
+for inp, out in zip(input_examples, output_examples):
+    anpl.funs[anpl.entry].gloden_ios.append(IOExample({in_param[0]: inp}, out))
+is_correct, io_id = anpl_check(anpl, anpl.entry)
 
 while not is_correct:
     system_info("[red]ANPL WRONG[/red] Here is the anpl program.")
     print_anpl(anpl)
+    rich.print(sys_str + "Current IO:")
+    current_io = anpl.funs[anpl.entry].gloden_ios[io_id]
+    print("---INPUT---")
+    print(current_io.inputs)
+    print("---OUTPUT---")
+    print({"out": current_io.output})
 
     cmd = Prompt.ask(sys_str + "Which command would you like to do? [1] Trace [2] Edit [3] Resynthesis [4] Remove IO [5] Quit", choices=["1", "2", "3", "4", "5"])
     if cmd == "5":
@@ -87,10 +116,10 @@ while not is_correct:
         else:
             break
 
-    fun_name = fun_select(anpl, logger, cmd == "1" or cmd == "2")
+    fun_name = fun_select(anpl, logger, cmd == "1" or cmd == "2" or cmd == "4")
     if cmd == "1":
         logger.log("user", "trace", f"{fun_name}")
-        ioc = anpl_trace(anpl, fun_name, anpl.funs[anpl.entry].gloden_ios[0].inputs)
+        ioc = anpl_trace(anpl, fun_name, anpl.funs[anpl.entry].gloden_ios[io_id].inputs)
         if ioc.crash:
             logger.log("system", "trace", f"{fun_name}: crash")
             system_info("[red]ANPL crash in this function.[/red]")
@@ -146,7 +175,8 @@ while not is_correct:
             newanpl.clean(fun_name)
             test_anpl = deepcopy(raw_test_anpl)
             test_anpl.fill_fun(fun_name, newanpl)
-            if anpl_check(test_anpl, fun_name, show_err=False):
+            is_correct, _ = anpl_check(test_anpl, fun_name, show_err=False)
+            if is_correct:
                 logger.log("system", "resyn", "info: code pass user's io")
                 anpl = test_anpl
                 find_correct_anpl = True
@@ -174,12 +204,14 @@ while not is_correct:
                 ios.pop(idx)
         continue
 
-    is_correct = anpl_check(anpl, anpl.entry)
+    is_correct, io_id = anpl_check(anpl, anpl.entry)
     logger.log("system", "anpl_check", f"{is_correct}")
 
 if is_correct:
     system_info("[green]ANPL CORRECT[/green], and here is the code")
-    print_anpl(anpl, for_user=False)
+    # print_anpl(anpl, for_user=False)
+    with open(f"cf_task/cf{task_id}.py", "w") as f:
+        f.write(anpl.to_python(for_user=False))
     logger.save(anpl)
 else:
     system_info("Good luck next time.")

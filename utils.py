@@ -108,7 +108,7 @@ def print_IOExamples(ios: list[IOExample]):
 
 def code_input(parser, logger):
     anpl = None
-    system_info("Please enter your anpl code.")
+    system_info("Please enter your code.")
 
     while anpl is None:
         user_input = multiline_input()
