@@ -62,7 +62,7 @@ while not is_correct:
         logger.log("user", "chat", new_message)
         system_info("Waiting for ChatGPT...")
         try:
-            res = raw_query(history, model="gpt-3.5-turbo", max_tokens=1024, n=1, temperature=0)
+            res = raw_query(history, model="gpt-3.5-turbo-0301", max_tokens=2048, n=1, temperature=0)
         except Exception as e:
             system_info("[red]ChatGPT Error[/red]")
             logger.log("gpt", "error", str(e))
