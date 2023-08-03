@@ -27,6 +27,7 @@ with open("cf_task/data.jsonl", "r", encoding='utf-8') as f:
         task = task_lst[0]
 
 url = task["url"]
+print(f"Question URL: {url}")
 webbrowser.open(url)
 io = json.loads(task["input_output"])
 input_examples, output_examples = io["inputs"], io["outputs"]
