@@ -43,7 +43,7 @@ class IOCollector:
 
 
 def anpl_trace(anpl: ANPL, fun_name: str, inputs: dict[str, Any], entry: Optional[str] = None) -> IOCollector:
-    assert len(anpl.get_holes()) == 0, "There are still holes in ANPL"
+    # assert len(anpl.get_holes()) == 0, "There are still holes in ANPL"
     module = import_module_from_string(anpl.to_python())
     io = IOCollector(fun_name, module)
     entry_point = getattr(module, entry or anpl.entry, None)
@@ -66,7 +66,7 @@ def anpl_check(anpl: ANPL, fun_name: str, show_err: bool=True) -> bool:
             except Exception:
                 print(ioc.exception) 
         if ioc.crash or len(ioc.ios) < 1:
-            return False
+            return False, io_id
         # if len(ioc.ios) > 1:
         #     print("This function should be a recursive function because we have collected many ios. Check")
         real_io = ioc.ios.pop()
