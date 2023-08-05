@@ -47,7 +47,7 @@ def hole_coder(source_code, hole):
     user_prompt = """```python
 {code}
 ```
-The function needs to be given a new name. Markdown format should be used to return it.
+The function needs to be given a new name. Markdown format should be used to return it. Please do not repeat the code that I handed over to you.
 ```python
 {hole}
 ```"""
@@ -58,7 +58,7 @@ def hole_resyner(source_code, hole):
     user_prompt = """```python
 {code}
 ```
-Markdown format should be used to return it.
+Markdown format should be used to return it. Please do not repeat the code that I handed over to you.
 ```python
 {hole}
 ```"""

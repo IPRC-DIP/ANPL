@@ -43,6 +43,20 @@ logger = Logger(task_id, "APPS")
 parser = ANPLParser()
 anpl = code_input(parser, logger)
 
+def clean_gpt(prev_anpl, new_anpl):
+    new_fun_names = set(new_anpl.funs.keys() - prev_anpl.funs.keys())
+    subfuns = set()
+    for name in new_fun_names:
+        if name in new_anpl.funs:
+            for n in new_anpl.funs[name].dependencies:
+                subfuns.add(n)
+    entries = new_fun_names - subfuns
+    if len(entries) == 1:
+        new_anpl.clean(entries.pop())
+        return True
+    else:
+        return False
+
 def syn_anpl(anpl: ANPL):
     holes = anpl.get_holes()
     for hole in track(holes, description="Synthesizing..."):
@@ -61,12 +75,11 @@ def syn_anpl(anpl: ANPL):
                             continue
                     else:
                         if newanpl.entry in anpl.funs:
-                            if newanpl.entry != hole:
-                                logger.log("system", "syn", "error: synthesis _hole with a used name")
+                            is_one_fun = clean_gpt(anpl, newanpl)
+                            if not is_one_fun:
+                                logger.log("system", "syn", "GPT returned invalid code")
                                 system_info("[yellow]Warning Generated Function has the same name with some function before. Perhaps you have very similar sentences? It can also be caused by chatgpt generating wrong code")
-                            else:
-                                logger.log("system", "syn", "error: chatgpt do not give a new function name")
-                            continue
+                                continue
                     anpl.fill_fun(hole, newanpl)
                     break
                 logger.log("system", "parse_gpt", "error")

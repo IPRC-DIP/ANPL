@@ -70,7 +70,8 @@ class ANPLParser:
 
         subfuns = {name for fun in funs.values() for name in fun.dependencies}
         entries = set(defined_funs.keys()) - subfuns
-        assert len(entries) == 1, "The number of entry is not 1"
+        if from_user:
+            assert len(entries) == 1, "The number of entry is not 1"
 
         anpl = ANPL(funs, entries.pop())
         # another check
