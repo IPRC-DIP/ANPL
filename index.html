@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="ANPL: Towards Natural Programming with Interactive Decomposition">
+  <meta name="keywords" content="Language Language Model, Program synthesis">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ANPL: Compiling Natural Programs with Interactive Decomposition</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <!-- highlight code -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">ANPL: Towards Natural Programming with Interactive Decomposition
+            </h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a>Di Huang</a><sup>1,2,†</sup>,</span>
+              <span class="author-block">
+                <a>Ziyuan Nan</a><sup>1,2,†</sup>,</span>
+              <span class="author-block">
+                <a>Xing Hu</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a>Pengwei Jin</a><sup>1,2</sup>,
+              </span>
+              <span class="author-block">
+                <a>Shaohui Peng</a><sup>1,2</sup>,
+              </span>
+              <span class="author-block">
+                <a>Yuanbo Wen</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a>Rui Zhang</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a>Zidong Du</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a>Qi Guo</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a>Yewen Pu</a><sup>3</sup>&
+              </span>
+              <span class="author-block">
+                <a>Yunji Chen</a><sup>1,2</sup>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>SKL of Processors, Institute of Computing Technology,
+                CAS</span><br>
+              <span class="author-block"><sup>2</sup>University of Chinese Academy of Sciences</span><br>
+              <span class="author-block"><sup>3</sup>Autodesk Research</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- PDF Link. -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/2305.18498" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                <!-- Code Link. -->
+                <span class="link-block">
+                  <a href="https://github.com/IPRC-DIP/ANPL" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+                <!-- Dataset Link. -->
+                <span class="link-block">
+                  <a href="https://iprc-dip.github.io/darc_flow/"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="far fa-images"></i>
+                    </span>
+                    <span>Data</span>
+                  </a>
+                </span>
+                <!-- Raw data Link-->
+                <span class="link-block">
+                  <a href="https://github.com/IPRC-DIP/darc_flow/releases/tag/v1.0"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-cloud-download-alt"></i>
+                    </span>
+                    <span>Download</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <video id="replay-video" controls muted preload playsinline width="100%">
+          <source src="./static/videos/intro.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              The advents of Large Language Models (LLMs) have shown promise in augmenting
+              programming using natural interactions. However, while LLMs are proficient in
+              compiling common usage patterns into a programming language, e.g., Python,
+              it remains a challenge how to edit and debug an LLM-generated program. We
+              introduce ANPL, a programming system that allows users to decompose user-
+              specific tasks. In an ANPL program, a user can directly manipulate “sketch”,
+              which specifies the data flow of the generated program. The user annotates the
+              modules, or “hole” with natural language descriptions offloading the expensive
+              task of generating functionalities to the LLM. Given an ANPL program, the ANPL
+              compiler generates a cohesive Python program that implements the functionalities
+              in hole, while respecting the dataflows specified in sketch. We deploy ANPL on the
+              Abstraction and Reasoning Corpus (ARC), a set of unique tasks that are challenging
+              for state-of-the-art AI systems, showing it outperforms baseline programming
+              systems that (a) without the ability to decompose tasks interactively and (b) without
+              the guarantee that the modules can be correctly composed together. We obtain
+              a dataset consisting of 300/400 ARC tasks that were successfully decomposed
+              and grounded in Python, providing valuable insights into how humans decompose
+              programmatic tasks.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!--/ Abstract. -->
+
+      <!-- Overview. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column">
+          <h2 class="title is-3">Overview</h2>
+          <div class="publication-video">
+            <img src="./static/images/overview.png">
+          </div>
+        </div>
+      </div>
+      <!--/ Overview. -->
+    </div>
+  </section>
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+
+      <div class="columns is-centered">
+        <div class="column">
+          <div class="content">
+            <h2 class="title is-3">User Study</h2>
+            <p>
+              We conducted a user study on 400 ARC training tasks to evaluate the effectiveness of ANPL compared
+              to the original ChatGPT (GPT-3.5-turbo). Specifically, we compare system A (ANPL), system B (GPT +
+              interaction, i.e. ChatGPT), system
+              C (ANPL without interaction), and system D (vanilla GPT), where systems C and D represent the solving rate
+              of one-shot generation without further interaction using systems A and
+              B, respectively.
+            </p>
+            <img src="./static/images/result1.png">
+            <p>
+              Results of problem-solving rates.
+              A: Solving rate of four systems.
+              B: The relationship between solving rate and time consumption.
+              C: The relationship between solving rate and number of interactions.
+              Trace Calculated(TC) means the trace mode is considered into interactions.
+            </p>
+            <img src="./static/images/result2.png">
+            <p>Results of problem-solving rates when users can not see generated Python code and only
+              interact with user interfaces and IO feedback.
+              A: Solving rates of four systems.
+              B: The relationship between solving rate and time consumption.
+              C: The relationship between solving rate and number of interactions.
+              Trace Calculated(TC) means the trace mode is considered into interactions.
+            </p>
+            <p>
+              In conclusion:
+            <ol>
+              <li>With large confidence, ANPL performs the best and allows users to solve more problems, with a solving
+                rate achieving 75.0% on average, while B achieves 58.4% (↑ 28.25%).</li>
+              <li>Programming with interaction (systems A and B) is always better than programming without interaction
+                (systems C and D).</li>
+              <li>Even for one-shot code generation, ANPL without interaction (system C) performs better than vanilla
+                GPT (system D).</li>
+            </ol>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Method -->
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">ANPL program of ANPL compiler</h2>
+          <p>Preserving the <i>sketch</i> & Generating the <i>holes</i></p>
+          <pre style="width: 100%; overflow: auto; background: none;">
+          <code class="python" style="min-width: 100%; width: 0px; overflow: scroll; font-family: 'Cascadia Code', 'Menlo', 'Courier New', monospace;">
+def compiling(ANPL):
+  while "ANPL program has a hole"(ANPL):
+  hole = "return the first hole in ANPL program"(ANPL):
+  enerated_code = LLM(ANPL, hole.descriptions, hole.IOs)
+  dependency_graph = "analyze generated code, return dependency graph with topology sort"(generated_code)
+  entry_nodes = "return all entry nodes of the dependency graph with topology sort"(dependency_graph)
+  if "the hole has been named by the user"(hole):
+    new_dependency_graph = "remove unrelated nodes in the dependency graph"(dependency_graph, hole)
+    ANPL = "fill the hole with generated code according to the dependency graph"(ANPL, generated_code, new_dependency_graph)
+  elif len(entry_nodes) == 1:
+    ANPL = "fill the hole with generated code according to the dependency graph"(ANPL, generated_code, dependency_graph)
+  else:
+    # The dependency graph has multiple entry nodes, re-generate the hole
+    continue
+  return ANPL
+        </code>
+      </pre>
+        </div>
+      </div>
+      <!--/ Method-->
+
+      <!-- User Interface. -->
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">User Interface</h2>
+
+          <div class="content has-text-justified">
+            <p>
+              The user interface consists of 3 operations: trace, edit, resynthesis. And we also provide a grid editor
+              for users.
+            </p>
+          </div>
+          <div class="content has-text-centered">
+            <video id="replay-video" controls muted preload playsinline width="75%">
+              <source src="./static/videos/ui.mp4" type="video/mp4">
+            </video>
+          </div>
+
+        </div>
+      </div>
+      <!--/ User Interface. -->
+
+      <!--
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Related Links</h2>
+
+          <div class="content has-text-justified">
+            <p>
+              There's a lot of excellent work that was introduced around the same time as ours.
+            </p>
+            <p>
+              <a href="https://arxiv.org/abs/2104.09125">Progressive Encoding for Neural Optimization</a> introduces an
+              idea similar to our windowed position encoding for coarse-to-fine optimization.
+            </p>
+            <p>
+              <a href="https://www.albertpumarola.com/research/D-NeRF/index.html">D-NeRF</a> and <a
+                href="https://gvv.mpi-inf.mpg.de/projects/nonrigid_nerf/">NR-NeRF</a>
+              both use deformation fields to model non-rigid scenes.
+            </p>
+            <p>
+              Some works model videos with a NeRF by directly modulating the density, such as <a
+                href="https://video-nerf.github.io/">Video-NeRF</a>, <a
+                href="https://www.cs.cornell.edu/~zl548/NSFF/">NSFF</a>, and <a
+                href="https://neural-3d-video.github.io/">DyNeRF</a>
+            </p>
+            <p>
+              There are probably many more by the time you are reading this. Check out <a
+                href="https://dellaert.github.io/NeRF/">Frank Dellart's survey on recent NeRF papers</a>, and <a
+                href="https://github.com/yenchenlin/awesome-NeRF">Yen-Chen Lin's curated list of NeRF papers</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+      -->
+
+    </div>
+  </section>
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This website is licensed under a <a rel="license"
+                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+                Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+            <p>
+              Thanks for the website template <a href="https://nerfies.github.io">Nerfies</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
